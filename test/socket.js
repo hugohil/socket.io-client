@@ -108,4 +108,13 @@ describe('socket', function () {
     socket3.disconnect();
     done();
   });
+
+  it('should not be able to emit internals events', function (done) {
+    var socket = io({ forceNew: true });
+    var events = ['connect', 'connect_error', 'connect_timeout', 'connecting', 'disconnect', 'error', 'reconnect', 'reconnect_attempt', 'reconnect_failed', 'reconnect_error', 'reconnecting', 'ping'];
+    events.forEach((event) => {
+      socket.emit(event);
+      expect(console.warn.calledWith(`${event} is a reserved internal event.`)).to.be.true;
+    });
+  });
 });
